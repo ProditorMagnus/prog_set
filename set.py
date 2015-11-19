@@ -1,6 +1,7 @@
 # Version 0.01
 
 from random import randint
+from random import shuffle
 
 # Cards: quantity (1, 2, 3), color (r, b, g), fill (e(mpty), s(triped), f(ull)), shape (s, o, d)
 # create fulldeck
