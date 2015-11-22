@@ -1,30 +1,14 @@
-# Version 0.01
-
 from random import randint
 from random import shuffle
+from time import time
 # from copy import deepcopy
 
 # Cards: quantity (1, 2, 3), color (r, b, g), fill (e(mpty), s(triped), f(ull)), shape (s, o, d)
 # create fulldeck
 
-# konvertisin, \[([0-9]), ([0-9]), ([0-9]), ([0-9])\] -> \(\1, \2, \3, \4\) ning muutsin 1,2,3 -> 0,1,2 - nii saab jääkide abil leida kahe kaardi järgi kolmandat
-
-# fulldeck = [[1, 1, 1, 1], [1, 1, 1, 2], [1, 1, 1, 3], [1, 1, 2, 1], [1, 1, 2, 2], [1, 1, 2, 3], [1, 1, 3, 1], [1, 1, 3, 2], [1, 1, 3, 3], [1, 2, 1, 1], [1, 2, 1, 2], [1, 2, 1, 3], [1, 2, 2, 1], [1, 2, 2, 2], [1, 2, 2, 3], [1, 2, 3, 1], [1, 2, 3, 2], [1, 2, 3, 3], [1, 3, 1, 1], [1, 3, 1, 2], [1, 3, 1, 3], [1, 3, 2, 1], [1, 3, 2, 2], [1, 3, 2, 3], [1, 3, 3, 1], [1, 3, 3, 2], [1, 3, 3, 3], [2, 1, 1, 1], [2, 1, 1, 2], [2, 1, 1, 3], [2, 1, 2, 1], [2, 1, 2, 2], [2, 1, 2, 3], [2, 1, 3, 1], [2, 1, 3, 2], [2, 1, 3, 3], [2, 2, 1, 1], [2, 2, 1, 2], [2, 2, 1, 3], [2, 2, 2, 1], [2, 2, 2, 2], [2, 2, 2, 3], [2, 2, 3, 1], [2, 2, 3, 2], [2, 2, 3, 3], [2, 3, 1, 1], [2, 3, 1, 2], [2, 3, 1, 3], [2, 3, 2, 1], [2, 3, 2, 2], [2, 3, 2, 3], [2, 3, 3, 1], [2, 3, 3, 2], [2, 3, 3, 3], [3, 1, 1, 1], [3, 1, 1, 2], [3, 1, 1, 3], [3, 1, 2, 1], [3, 1, 2, 2], [3, 1, 2, 3], [3, 1, 3, 1], [3, 1, 3, 2], [3, 1, 3, 3], [3, 2, 1, 1], [3, 2, 1, 2], [3, 2, 1, 3], [3, 2, 2, 1], [3, 2, 2, 2], [3, 2, 2, 3], [3, 2, 3, 1], [3, 2, 3, 2], [3, 2, 3, 3], [3, 3, 1, 1], [3, 3, 1, 2], [3, 3, 1, 3], [3, 3, 2, 1], [3, 3, 2, 2], [3, 3, 2, 3], [3, 3, 3, 1], [3, 3, 3, 2], [3, 3, 3, 3]]
 fulldeck = [(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 0), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 0), (0, 0, 2, 1), (0, 0, 2, 2), (0, 1, 0, 0), (0, 1, 0, 1), (0, 1, 0, 2), (0, 1, 1, 0), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 0), (0, 1, 2, 1), (0, 1, 2, 2), (0, 2, 0, 0), (0, 2, 0, 1), (0, 2, 0, 2), (0, 2, 1, 0), (0, 2, 1, 1), (0, 2, 1, 2), (0, 2, 2, 0), (0, 2, 2, 1), (0, 2, 2, 2), (1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 0, 2), (1, 0, 1, 0), (1, 0, 1, 1), (1, 0, 1, 2), (1, 0, 2, 0), (1, 0, 2, 1), (1, 0, 2, 2), (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 0, 2), (1, 1, 1, 0), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 0), (1, 1, 2, 1), (1, 1, 2, 2), (1, 2, 0, 0), (1, 2, 0, 1), (1, 2, 0, 2), (1, 2, 1, 0), (1, 2, 1, 1), (1, 2, 1, 2), (1, 2, 2, 0), (1, 2, 2, 1), (1, 2, 2, 2), (2, 0, 0, 0), (2, 0, 0, 1), (2, 0, 0, 2), (2, 0, 1, 0), (2, 0, 1, 1), (2, 0, 1, 2), (2, 0, 2, 0), (2, 0, 2, 1), (2, 0, 2, 2), (2, 1, 0, 0), (2, 1, 0, 1), (2, 1, 0, 2), (2, 1, 1, 0), (2, 1, 1, 1), (2, 1, 1, 2), (2, 1, 2, 0), (2, 1, 2, 1), (2, 1, 2, 2), (2, 2, 0, 0), (2, 2, 0, 1), (2, 2, 0, 2), (2, 2, 1, 0), (2, 2, 1, 1), (2, 2, 1, 2), (2, 2, 2, 0), (2, 2, 2, 1), (2, 2, 2, 2)]
 gamedeck = fulldeck[:]
 shuffle(gamedeck)
-
-def checkifset(card1,card2,card3):
-    set = 0
-    for i in range(4):
-        if card1[i] == card2[i] and card1[i] == card3[i]:
-            set += 1
-        elif card1[i] != card2[i] and card1[i] != card3[i] and card2[i] != card3[i]:
-            set += 1
-        else:
-            return False
-    if set == 4:
-        return True
 
 def find_sets(cards):
 	# iga kahese grupi kohta, kas eksisteerib kindel kolmas kaart
@@ -40,7 +24,6 @@ def find_sets(cards):
 				continue
 			# print(i,j)
 			needed = []
-			# on parem, kui võimalikud väärtused on 0,1,2 mitte 1,2,3
 			# saab olla 0,1,2
 			# kui on 0,1, vaja 2
 			# kui on 0,2, vaja 1
@@ -64,44 +47,70 @@ def find_sets(cards):
 			# input()
 	return r
 
-#checkifset([1,1,1,1],[2,2,2,2],[3,3,3,3])
-""" - paistis et seda pole vaja. Muide, need card1, card2, card3 võivad siin ka kõik samad olla
-true = []
-false = []
-for i in range(81):
-    card1 = fulldeck[randint(0,80)]
-    card2 = fulldeck[randint(0,80)]
-    card3 = fulldeck[randint(0,80)]
-    if checkifset(card1,card2,card3) == True:
-        true.append(card1)
-        true.append(card2)
-        true.append(card3)
-        true.append(i)
-    else:
-        false.append(card1)
-        false.append(card2)
-        false.append(card3)
-        false.append(i)
+def do_draw(amount=12): # märkides amountiks 81, tagastab funktsioon find_sets(ontable) kõik 1080 võimalikku setti.
+    for i in range(amount):
+            on_table.append(gamedeck.pop())
 
-print("True: " + str(true))
-print("False: " + str(false))
+# Tegin järgnevate jaoks eraldi funktsioonid
 """
-
-def do_draw(amount=12):
-	one_draw = []
-	for i in range(amount):
-		one_draw.append(gamedeck.pop())
-
-	tmp = find_sets(one_draw)
+	tmp = find_sets(on_table)
 	print("Kaardid")
-	for i in one_draw:
+	for i in on_table:
 		print(i)
 	print("Setid")
 	for i in tmp:
 		print(i)
+"""
 
+def remove_set(selection):
+    # ei kontrolli, kas valitakse kaart, mida pole laual - graafiline liides peaks välistama võimaluse
+    # praegusel kujul tuleb sisend sõnena
+    # laual olevate kaartide järjekorranumbrid
+    sel = selection.replace(' ','').split(',')
+
+    # loob enniku kaartidest vastavalt kasutaja sisestatud järjekorranumbritele
+    cards = on_table[int(sel[0])-1],on_table[int(sel[1])-1],on_table[int(sel[2])-1]
+
+    # sorteerib kaardid, et kontrollida, kas need on set
+    sorted_cards = tuple(sorted(cards))
+    if sorted_cards in find_sets(cards):
+        for card in range(3):
+            # asendab kaardid pakist võetud uutega, nii et laual järjekord ei muutu
+            on_table[int(sel[card])-1] = gamedeck.pop()
+
+def print_table():
+    row = 1
+    print("\nKaardid")
+    for i in on_table:
+        print(str(row) + ".", str(i))
+        row += 1
+    print("Laual on", str(len(find_sets(on_table))), "setti:")
+    print(str(find_sets(on_table)))
+    print("Pakis on veel", len(gamedeck), "kaarti.")
+
+on_table = []
+score = 0
+
+# Mängu alguses tõmmatakse 12 kaarti
 do_draw()
 
+# Mäng ei oska praegu arvestada 12 kaardi piiranguga, st valib pakist viimased kaardid ja ei arvesta, et 12 kaardi seas PEAB olema set
+while len(gamedeck) > 0:
+    print_table()
+    time_start = time()
+    sets = len(find_sets(on_table))
+    if sets > 0:
+        selection = input("Vali kaardid (kujul: 1,10,6): ")
+        remove_set(selection)
+        time_stop = time()
+        score += round(time_stop - time_start)//sets # Mida rohkem sette laual, seda vähem punkte
+    else:
+        # seti puudumisel tõmbab täiendavad 3 kaarti; praegu jääb sellisel kujul mängu lõpuni 3 kaarti rohkem, kuna valitud kaardid asendatakse
+        # poleks vaja, kui programm tõmbaks kaardid alati nii, et leiduks ka set
+        do_draw(3)
+
+# Lõpetab mängu ka siis, kui laual on veel mõni set
+print("Mäng on läbi. Sinu punktisumma on:", str(score))
 
 # input on mul lihtsalt selle jaoks vaja et programm kohe kinni ei läheks - kasutan shell execute current file mitte mõnda pythoni asja
-input()
+# input()
