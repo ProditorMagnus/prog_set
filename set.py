@@ -1,7 +1,15 @@
 from random import randint
 from random import shuffle
 from time import time
+import pygame # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
 # from copy import deepcopy
+
+pygame.init()
+
+gamescreen = pygame.display.set_mode((1280, 720))
+gamescreen.fill((0, 128, 60))
+
+pygame.display.set_caption("Set")
 
 # Cards: quantity (1, 2, 3), color (r, b, g), fill (e(mpty), s(triped), f(ull)), shape (s, o, d)
 # create fulldeck
@@ -47,7 +55,7 @@ def find_sets(cards):
 			# input()
 	return r
 
-def do_draw(amount=12): # märkides amountiks 81, tagastab funktsioon find_sets(ontable) kõik 1080 võimalikku setti.
+def do_draw(amount=12): # märkides amountiks 81, tagastab find_sets(on_table) kõik 1080 võimalikku setti.
     for i in range(amount):
         on_table.append(gamedeck.pop())
 
@@ -70,11 +78,11 @@ def pick_set_cards(selected_cards):
     temp_table = []
 
     # loob koopia laual olevatest kaartidest
-    for a in on_table:
-        temp_table.append(a)
+    temp_table = on_table[:]
     # võtab koopiast välja eemaldatavad kaardid
-    for b in selected_cards:
-        temp_table.remove(b)
+    temp_table.remove(selected_cards)
+##    for b in selected_cards:
+##        temp_table.remove(b)
 
     # võtab järelejäänud kaartidest 2 kaarti ja otsib neile gamedeckist kolmanda, et moodustada set
     while len(find_sets(temp_table)) == 0:
@@ -135,7 +143,7 @@ on_table = []
 score = 0
 
 # Mängu alguses tõmmatakse 12 kaarti
-do_draw(12)
+do_draw(9)
     
 # Alati ei jää viimaste kaartide hulka seti.
 while len(gamedeck) > 0:
