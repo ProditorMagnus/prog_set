@@ -1,4 +1,8 @@
+from random import randint
+from random import shuffle
+from time import time
 import pygame # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
+
 
 # joonistab kaardi ekraanile
 def card_on_table(card,location):
@@ -60,6 +64,8 @@ def select_card(position):
         card_on_table(deselected_card,position)
         on_table_selected.remove(position)
     else:
+        if len(on_table_selected) > 2:
+            return
         card_on_table(selected_card,position)
         on_table_selected.append(position)
 
@@ -181,6 +187,7 @@ card_2222 = pygame.image.load('Cards//2222.png')
 selected_card = pygame.image.load('Cards//selected_card.png')
 deselected_card = pygame.image.load('Cards//deselected_card.png')
 deck_card = pygame.image.load('Cards//deck_card.png')
+
 
 card_on_table(card_0000,card0_loc)
 card_on_table(card_0200,card1_loc)
