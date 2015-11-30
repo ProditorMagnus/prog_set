@@ -4,12 +4,71 @@ import pygame # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
 def card_on_table(card,location):
     gamescreen.blit(card,location)
 
+# joonistab järelejäänud kaartidest koosneva kaardipaki
+def deck_on_table():
+    location_x = table_frame_width+card_width*4+card_spacing*4
+    location_y = table_frame_height
+    for card in range((81-12)//6):
+        card_on_table(deck_card,(location_x,location_y))
+        location_x += 2
+        location_y -= 2
+
+# reageerib klikile mänguväljal
+def screen_click(position):
+    x = position[0]
+    y = position[1]
+    if x > card0_loc[0] and y > card0_loc[1] and x < card11_loc[0]+150 and y < card11_loc[1]+220:
+        click_card(position)
+
+# reageerib klikile kaardiväljal, selekteerib kaardi
+def click_card(position):
+    x = position[0]
+    y = position[1]
+    if x > card0_loc[0] and x < card0_loc[0]+150:
+        if y > card0_loc[1] and y < card0_loc[1]+220:
+            select_card(card0_loc)
+        if y > card4_loc[1] and y < card4_loc[1]+220:
+            select_card(card4_loc)
+        if y > card8_loc[1] and y < card8_loc[1]+220:
+            select_card(card8_loc)
+    if x > card1_loc[0] and x < card1_loc[0]+150:
+        if y > card1_loc[1] and y < card1_loc[1]+220:
+            select_card(card1_loc)
+        if y > card5_loc[1] and y < card5_loc[1]+220:
+            select_card(card5_loc)
+        if y > card9_loc[1] and y < card9_loc[1]+220:
+            select_card(card9_loc)
+    if x > card2_loc[0] and x < card2_loc[0]+150:
+        if y > card2_loc[1] and y < card2_loc[1]+220:
+            select_card(card2_loc)
+        if y > card6_loc[1] and y < card6_loc[1]+220:
+            select_card(card6_loc)
+        if y > card10_loc[1] and y < card10_loc[1]+220:
+            select_card(card10_loc)
+    if x > card3_loc[0] and x < card3_loc[0]+150:
+        if y > card3_loc[1] and y < card3_loc[1]+220:
+            select_card(card3_loc)
+        if y > card7_loc[1] and y < card7_loc[1]+220:
+            select_card(card7_loc)
+        if y > card11_loc[1] and y < card11_loc[1]+220:
+            select_card(card11_loc)
+
+# kontrollib, kas kaart on selekteeritud või mitte ning vastavalt sellele
+# deselekteerib või selekteerib selle
+def select_card(position):
+    if position in on_table_selected:
+        card_on_table(deselected_card,position)
+        on_table_selected.remove(position)
+    else:
+        card_on_table(selected_card,position)
+        on_table_selected.append(position)
+
 pygame.init()
 display_width = 1024
 display_height = 768
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
 gamescreen.fill((0, 128, 0)) # Roheline laud
-pygame.display.set_caption("Set")
+pygame.display.set_caption("Set") # Tiitliribale tekst
 
 clock = pygame.time.Clock()
 
@@ -120,6 +179,7 @@ card_2202 = pygame.image.load('Cards//2202.png')
 card_2212 = pygame.image.load('Cards//2212.png')
 card_2222 = pygame.image.load('Cards//2222.png')
 selected_card = pygame.image.load('Cards//selected_card.png')
+deselected_card = pygame.image.load('Cards//deselected_card.png')
 deck_card = pygame.image.load('Cards//deck_card.png')
 
 card_on_table(card_0000,card0_loc)
@@ -134,17 +194,9 @@ card_on_table(card_0011,card8_loc)
 card_on_table(card_0220,card9_loc)
 card_on_table(card_2100,card10_loc)
 card_on_table(card_0222,card11_loc)
-card_on_table(selected_card,card0_loc)
-card_on_table(selected_card,card7_loc)
-card_on_table(selected_card,card10_loc)
 
-def deck_on_table():
-    location_x = table_frame_width+card_width*4+card_spacing*4
-    location_y = table_frame_height
-    for card in range((81-12)//6):
-        card_on_table(deck_card,(location_x,location_y))
-        location_x += 2
-        location_y -= 2
+# selekteeritud kaardid
+on_table_selected = []
 
 closed = False
 
@@ -153,9 +205,11 @@ while not closed:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             closed = True
-        #print(event)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            screen_click(event.pos)
+        print(event)
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(30)
 
 pygame.quit()
 quit()
