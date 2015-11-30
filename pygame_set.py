@@ -67,16 +67,17 @@ def click_card(position):
 # kontrollib, kas kaart on selekteeritud või mitte ning vastavalt sellele
 # deselekteerib või selekteerib selle
 def select_card(position):
-    if position in on_table_selected:
+    this_card = card_repr(cards_on_table[((position[0])//156)+4*(position[1])//226])
+    if this_card in on_table_selected:
         # card_on_table(deselected_card,position)
         gamescreen.blit(deselected_card,position)
-        on_table_selected.remove(position)
+        on_table_selected.remove(this_card)
     else:
         if len(on_table_selected) > 2:
             print("3 kaarti on juba valitud. Seda ei tohiks tegelikult vist juhtuda.")
             return
         gamescreen.blit(selected_card,position)
-        on_table_selected.append(card_repr(cards_on_table[((position[0])//156)+4*(position[1])//226]))
+        on_table_selected.append(this_card)
     print("Selected",on_table_selected)
     print("Laual",cards_on_table)
     if(find_sets(on_table_selected)):
