@@ -2,19 +2,25 @@ from random import randint
 from random import shuffle
 from time import time
 import pygame # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
+from global_vars import *
 from set_card_data import *
-
+from set_game_logic import *
 
 # joonistab kaardi ekraanile
 def card_on_table(card,location):
-    gamescreen.blit(card,location)
+    # print(card)
+    global cards_on_table
+    cards_on_table.append(card)
+
+    gamescreen.blit(eval("card_"+card),location)
 
 # joonistab järelejäänud kaartidest koosneva kaardipaki
 def deck_on_table():
     location_x = table_frame_width+card_width*4+card_spacing*4
     location_y = table_frame_height
     for card in range((81-12)//6):
-        card_on_table(deck_card,(location_x,location_y))
+        # see on erinev tavalistest kaartidest
+        gamescreen.blit(deck_card,(location_x,location_y))
         location_x += 2
         location_y -= 2
 
@@ -62,19 +68,23 @@ def click_card(position):
 # deselekteerib või selekteerib selle
 def select_card(position):
     if position in on_table_selected:
-        card_on_table(deselected_card,position)
+        # card_on_table(deselected_card,position)
+        gamescreen.blit(deselected_card,position)
         on_table_selected.remove(position)
     else:
         if len(on_table_selected) > 2:
+            print("3 kaarti on juba valitud. Seda ei tohiks tegelikult vist juhtuda.")
             return
-        card_on_table(selected_card,position)
-        on_table_selected.append(position)
+        gamescreen.blit(selected_card,position)
+        on_table_selected.append(card_repr(cards_on_table[((position[0])//156)+4*(position[1])//226]))
     print("Selected",on_table_selected)
-    # print("Laual",on_table) # pole veel seda
+    print("Laual",cards_on_table)
+    if(find_sets(on_table_selected)):
+        print("Sets in selection:",find_sets(on_table_selected))
+        # augud täita
 
 pygame.init()
-display_width = 1024
-display_height = 768
+
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
 gamescreen.fill((0, 128, 0)) # Roheline laud
 pygame.display.set_caption("Set") # Tiitliribale tekst
@@ -82,27 +92,20 @@ pygame.display.set_caption("Set") # Tiitliribale tekst
 clock = pygame.time.Clock()
 
 
+card_on_table("0000",card0_loc)
+card_on_table("0200",card1_loc)
+card_on_table("1000",card2_loc)
+card_on_table("0010",card3_loc)
+card_on_table("2000",card4_loc)
+card_on_table("0110",card5_loc)
+card_on_table("1111",card6_loc)
+card_on_table("0020",card7_loc)
+card_on_table("0011",card8_loc)
+card_on_table("0220",card9_loc)
+card_on_table("2100",card10_loc)
+card_on_table("0222",card11_loc)
 
-card_on_table(card_0000,card0_loc)
-card_on_table(card_0200,card1_loc)
-card_on_table(card_1000,card2_loc)
-card_on_table(card_0010,card3_loc)
-card_on_table(card_2000,card4_loc)
-card_on_table(card_0110,card5_loc)
-card_on_table(card_1111,card6_loc)
-card_on_table(card_0020,card7_loc)
-card_on_table(card_0011,card8_loc)
-card_on_table(card_0220,card9_loc)
-card_on_table(card_2100,card10_loc)
-card_on_table(card_0222,card11_loc)
 
-# selekteeritud kaardid
-on_table_selected = []
-
-# laual olevad kaardid
-on_table = []
-
-closed = False
 
 while not closed:
     deck_on_table()
@@ -111,7 +114,9 @@ while not closed:
             closed = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             screen_click(event.pos)
-        print(event)
+        if event.type != 4:
+            # avoid printing mousemove events
+            print(event)
     pygame.display.update()
     clock.tick(30)
 
