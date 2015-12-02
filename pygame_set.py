@@ -84,14 +84,19 @@ def select_card(position):
         print("Sets in selection:",find_sets(on_table_selected))
         # augud täita
 
+
 pygame.init()
 
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
 gamescreen.fill((0, 128, 0)) # Roheline laud
 pygame.display.set_caption("Set") # Tiitliribale tekst
+gamesounds = False # Kas mäng esitab helisid
+welcome = pygame.mixer.Sound('Sounds//Welcome.ogg') # Ogg on Pygame'i puhul sobivaim formaat
 
 clock = pygame.time.Clock()
 
+if gamesounds == True:
+    welcome.play()
 
 card_on_table("0000",card0_loc)
 card_on_table("0200",card1_loc)
