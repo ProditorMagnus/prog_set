@@ -73,16 +73,21 @@ def select_card(position):
         gamescreen.blit(deselected_card,position)
         on_table_selected.remove(this_card)
     else:
-        if len(on_table_selected) > 2:
-            print("3 kaarti on juba valitud. Seda ei tohiks tegelikult vist juhtuda.")
-            return
         gamescreen.blit(selected_card,position)
         on_table_selected.append(this_card)
+        if(find_sets(on_table_selected)):
+            print("Sets in selection:",find_sets(on_table_selected))
+            # augud täita
+            if gamesounds == True:
+                success.play()
+            return
+        if len(on_table_selected) > 2:
+            print("No sets in selection.") # Siia lisada veateade - tekitan helifaili
+            if gamesounds == True:
+                wontwork.play()
+            return
     print("Selected",on_table_selected)
     print("Laual",cards_on_table)
-    if(find_sets(on_table_selected)):
-        print("Sets in selection:",find_sets(on_table_selected))
-        # augud täita
 
 
 pygame.init()
@@ -90,12 +95,13 @@ pygame.init()
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
 gamescreen.fill((0, 128, 0)) # Roheline laud
 pygame.display.set_caption("Set") # Tiitliribale tekst
-gamesounds = False # Kas mäng esitab helisid
-welcome = pygame.mixer.Sound('Sounds//Welcome.ogg') # Ogg on Pygame'i puhul sobivaim formaat
-
+gamesounds = True # Kas mäng esitab helisid; .ogg on Pygame'i puhul sobivaim formaat
+welcome = pygame.mixer.Sound('Sounds//Welcome.ogg') # Employing the voice talents from http://onlinetonegenerator.com/voice-generator.html
+success = pygame.mixer.Sound('Sounds//Success.ogg') # Set'i leidmise korral
+wontwork = pygame.mixer.Sound('Sounds//WontWork.ogg') # Valesti valitud kaartide korral
 clock = pygame.time.Clock()
 
-if gamesounds == True:
+if gamesounds == True: # Ei leidnud esialgu paremat viisi, kuidas helide esitamist vältida
     welcome.play()
 
 card_on_table("0000",card0_loc)
