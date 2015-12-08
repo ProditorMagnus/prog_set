@@ -73,19 +73,27 @@ def select_card(position):
         gamescreen.blit(deselected_card,position)
         on_table_selected.remove(this_card)
     else:
+        if len(on_table_selected) > 2:
+            print("Siin saab öelda, et üle 3 ei või korraga valida. Sobiks lühike ning mitte liiga häiriv heli.")
+            return
         gamescreen.blit(selected_card,position)
         on_table_selected.append(this_card)
         if(find_sets(on_table_selected)):
             print("Sets in selection:",find_sets(on_table_selected))
             # augud täita
+            for i in range(len(on_table_selected)-1,-1,-1):
+                print("Removing",cards_on_table.index(card_str(on_table_selected[i])))
+                gamescreen.blit(tmp_removed_card,eval("card"+str(cards_on_table.index(card_str(on_table_selected[i])))+"_loc"))
+                on_table_selected.pop()
             if gamesounds == True:
                 success.play()
             return
-        if len(on_table_selected) > 2:
-            print("No sets in selection.") # Siia lisada veateade - tekitan helifaili
-            if gamesounds == True:
-                wontwork.play()
-            return
+        else:
+            if(len(on_table_selected) > 2):
+                print("No sets in selection.") # Siia lisada veateade - tekitan helifaili
+                if gamesounds == True:
+                    wontwork.play()
+                return
     print("Selected",on_table_selected)
     print("Laual",cards_on_table)
 
@@ -102,6 +110,7 @@ wontwork = pygame.mixer.Sound('Sounds//WontWork.ogg') # Valesti valitud kaartide
 clock = pygame.time.Clock()
 
 if gamesounds == True: # Ei leidnud esialgu paremat viisi, kuidas helide esitamist vältida
+    # KINDLASTI on vaja GUI mute nuppu
     welcome.play()
 
 card_on_table("0000",card0_loc)

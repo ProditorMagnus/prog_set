@@ -89,6 +89,9 @@ selected_card = pygame.image.load('Cards//selected_card.png')
 deselected_card = pygame.image.load('Cards//deselected_card.png')
 deck_card = pygame.image.load('Cards//deck_card.png')
 
+# seda tõenäoliselt pole lõpuks vaja
+tmp_removed_card = pygame.image.load('Cards//tmp_removed_card.png')
+
 
 # Kaartide pildifailide suurused
 card_width = 151

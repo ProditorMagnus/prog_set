@@ -10,6 +10,8 @@ from random import shuffle
 def card_repr(s):
 	return (int(s[0]),int(s[1]),int(s[2]),int(s[3]))
 
+def card_str(t):
+	return str(t[0])+str(t[1])+str(t[2])+str(t[3])
 
 # gamedeck = fulldeck[:]
 # shuffle(gamedeck)
