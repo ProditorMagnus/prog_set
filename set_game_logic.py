@@ -1,5 +1,7 @@
 from random import randint
 from random import shuffle
+# vajalik card_pos jaoks
+from set_card_data import card0_loc,card1_loc,card2_loc,card3_loc,card4_loc,card5_loc,card6_loc,card7_loc,card8_loc,card9_loc,card10_loc,card11_loc
 # from time import time
 # from copy import deepcopy
 
@@ -12,6 +14,9 @@ def card_repr(s):
 
 def card_str(t):
 	return str(t[0])+str(t[1])+str(t[2])+str(t[3])
+
+def card_pos(i):
+	return eval("card"+str(i)+"_loc")
 
 # gamedeck = fulldeck[:]
 # shuffle(gamedeck)
