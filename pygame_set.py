@@ -31,7 +31,8 @@ def deck_on_table():
     location_x = table_frame_width+card_width*4+card_spacing*4
     location_y = table_frame_height
     # lisada sõltuvus allesjäänud paki suurusest
-    for card in range((81-12)//6):
+    pygame.draw.rect(gamescreen,(0,128,0),(location_x,location_y-14,card_width+14,card_height+14))
+    for card in range(len(gamedeck)//6):
         # see on erinev tavalistest kaartidest
         gamescreen.blit(deck_card,(location_x,location_y))
         location_x += 2
