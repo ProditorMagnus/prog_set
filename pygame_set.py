@@ -9,14 +9,27 @@ from set_game_logic import *
 gamedeck = fulldeck[:]
 shuffle(gamedeck)
 
-def reset_table_state():
+
+
+def draw_new_deck(amount=12,recursion=0):
+    if(recursion>50):
+        print("50 iterations say no more sets left")
+        # input()
+    global cards_on_table
+    cards_on_table = []
+    for i in range(amount):
+        card_on_table(card_str(gamedeck[0]),card_pos(i))
+    if no_set_on_table():
+        draw_new_deck(amount,recursion+1)
+    
+
+def reset_table_state(amount=12):
     # siis kui ei leidu set
     global cards_on_table
     for i in range(len(cards_on_table)-1,-1,-1):
         c = gamedeck.append(card_repr(cards_on_table[i]))
-    cards_on_table = []
-    for i in range(12):
-        card_on_table(card_str(gamedeck[0]),card_pos(i))
+    
+    draw_new_deck(amount)
     
     global on_table_selected
     for i in range(12):
@@ -36,7 +49,7 @@ def card_on_table(card,location):
     # pole vist vaja et oleks global, kui kasutada muteerumist mitte omistamist
     # global cards_on_table
     # pakist ära võtta need mis lauale panna
-    print(gamedeck)
+    # print(gamedeck)
     gamedeck.remove(card_repr(card))
     print("adding",card)
     cards_on_table.append(card) # append paneb uued kaardid valele kohale
@@ -67,7 +80,8 @@ def deck_on_table():
     location_y = table_frame_height
     # lisada sõltuvus allesjäänud paki suurusest
     pygame.draw.rect(gamescreen,(0,128,0),(location_x,location_y-14,card_width+14,card_height+14))
-    for card in range(len(gamedeck)//6):
+    for card in range((len(gamedeck)+3)//6):
+        # +3 abil see näitab kui pakk on tühi õigel ajal
         # see on erinev tavalistest kaartidest
         gamescreen.blit(deck_card,(location_x,location_y))
         location_x += 2
@@ -120,7 +134,9 @@ def select_card(position):
     try:
         this_card = card_repr(cards_on_table[((position[0])//156)+4*(position[1])//226])
     except:
-        input("indeksid on vigased, edasi ei saa hetkel")
+        print("indeksid on vigased, edasi ei saa hetkel - teha game over?")
+        
+        return
         # lahendus võiks olla näiteks kontroll, kas cards_on_table on selles kohas None - ning see None panna õigesse kohta
     if this_card in on_table_selected:
         # card_on_table(deselected_card,position)
@@ -187,21 +203,7 @@ if gamesounds == True: # Ei leidnud esialgu paremat viisi, kuidas helide esitami
     welcome.play()
 
 # selle jaoks ka while not has_set
-for i in range(12):
-    card_on_table(card_str(gamedeck[0]),card_pos(i))
-# card_on_table("0000",card0_loc)
-# card_on_table("0200",card1_loc)
-# card_on_table("1000",card2_loc)
-# card_on_table("0010",card3_loc)
-# card_on_table("2000",card4_loc)
-# card_on_table("0110",card5_loc)
-# card_on_table("1111",card6_loc)
-# card_on_table("0020",card7_loc)
-# card_on_table("0011",card8_loc)
-# card_on_table("0220",card9_loc)
-# card_on_table("2100",card10_loc)
-# card_on_table("0222",card11_loc)
-
+draw_new_deck()
 
 
 while not closed:
