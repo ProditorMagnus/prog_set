@@ -7,20 +7,44 @@ from set_card_data import *
 from set_game_logic import *
 
 gamedeck = fulldeck[:]
+shuffle(gamedeck)
 
-# joonistab kaardi ekraanile
-def card_on_table(card,location):
-    # print(card)
-    # pole vist vaja et oleks global, kui kasutada muteerumist mitte omistamist
-    # global cards_on_table
-    # pakist ära võtta need mis lauale panna
-    gamedeck.remove(card_repr(card))
-    print("adding",card)
+def reset_table_state():
+    # siis kui ei leidu set
+    global cards_on_table
+    for i in range(len(cards_on_table)-1,-1,-1):
+        c = gamedeck.append(card_repr(cards_on_table[i]))
+    cards_on_table = []
+    for i in range(12):
+        card_on_table(card_str(gamedeck[0]),card_pos(i))
+    
+    global on_table_selected
+    for i in range(12):
+        gamescreen.blit(deselected_card,card_pos(i))
+    on_table_selected = []
+
+def no_set_on_table():
     card_tuples_on_table=[]
     for i in cards_on_table:
         card_tuples_on_table.append(card_repr(i))
     print("sets on table",find_sets(card_tuples_on_table))
+    return find_sets(card_tuples_on_table)==set()
+        
+# joonistab kaardi ekraanile
+def card_on_table(card,location):
+    print(card_repr(card))
+    # pole vist vaja et oleks global, kui kasutada muteerumist mitte omistamist
+    # global cards_on_table
+    # pakist ära võtta need mis lauale panna
+    print(gamedeck)
+    gamedeck.remove(card_repr(card))
+    print("adding",card)
     cards_on_table.append(card) # append paneb uued kaardid valele kohale
+
+    # card_tuples_on_table=[]
+    # for i in cards_on_table:
+        # card_tuples_on_table.append(card_repr(i))
+    # print("sets on table",find_sets(card_tuples_on_table))
 
     gamescreen.blit(eval("card_"+card),location)
     
@@ -29,10 +53,11 @@ def card_to_table(card,index):
     print("adding1",card,index)
     cards_on_table.insert(index,card)
     
-    card_tuples_on_table=[]
-    for i in cards_on_table:
-        card_tuples_on_table.append(card_repr(i))
-    print("sets on table",find_sets(card_tuples_on_table))
+    # card_tuples_on_table=[]
+    # for i in cards_on_table:
+        # card_tuples_on_table.append(card_repr(i))
+    # print("sets on table",find_sets(card_tuples_on_table))
+    # siin on veel vara kontrollida, eelmist pole veel eemaldatud
     
     gamescreen.blit(eval("card_"+card),card_pos(index))
 
@@ -91,6 +116,7 @@ def click_card(position):
 # kontrollib, kas kaart on selekteeritud või mitte ning vastavalt sellele
 # deselekteerib või selekteerib selle
 def select_card(position):
+    no_set_on_table()
     try:
         this_card = card_repr(cards_on_table[((position[0])//156)+4*(position[1])//226])
     except:
@@ -127,6 +153,10 @@ def select_card(position):
                 
                 cards_on_table.pop(cards_on_table.index(card_str(on_table_selected[i])))
                 on_table_selected.pop()
+                if(no_set_on_table()):
+                    print("No sets on table")
+                    reset_table_state()
+                    return
             # ja augud täita
             if gamesounds == True:
                 success.play()
@@ -156,19 +186,21 @@ if gamesounds == True: # Ei leidnud esialgu paremat viisi, kuidas helide esitami
     # KINDLASTI on vaja GUI mute nuppu
     welcome.play()
 
-
-card_on_table("0000",card0_loc)
-card_on_table("0200",card1_loc)
-card_on_table("1000",card2_loc)
-card_on_table("0010",card3_loc)
-card_on_table("2000",card4_loc)
-card_on_table("0110",card5_loc)
-card_on_table("1111",card6_loc)
-card_on_table("0020",card7_loc)
-card_on_table("0011",card8_loc)
-card_on_table("0220",card9_loc)
-card_on_table("2100",card10_loc)
-card_on_table("0222",card11_loc)
+# selle jaoks ka while not has_set
+for i in range(12):
+    card_on_table(card_str(gamedeck[0]),card_pos(i))
+# card_on_table("0000",card0_loc)
+# card_on_table("0200",card1_loc)
+# card_on_table("1000",card2_loc)
+# card_on_table("0010",card3_loc)
+# card_on_table("2000",card4_loc)
+# card_on_table("0110",card5_loc)
+# card_on_table("1111",card6_loc)
+# card_on_table("0020",card7_loc)
+# card_on_table("0011",card8_loc)
+# card_on_table("0220",card9_loc)
+# card_on_table("2100",card10_loc)
+# card_on_table("0222",card11_loc)
 
 
 
