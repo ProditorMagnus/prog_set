@@ -14,12 +14,17 @@ shuffle(gamedeck)
 def draw_new_deck(amount=12,recursion=0):
     if(recursion>50):
         print("50 iterations say no more sets left")
-        # input()
+        input()
     global cards_on_table
     cards_on_table = []
     for i in range(amount):
-        card_on_table(card_str(gamedeck[0]),card_pos(i))
+        try:
+            card_on_table(card_str(gamedeck[0]),card_pos(i))
+        except:
+            print("no more deck, end game")
+            amount-=3
     if no_set_on_table():
+        shuffle(gamedeck)
         draw_new_deck(amount,recursion+1)
     
 
@@ -171,6 +176,8 @@ def select_card(position):
                 on_table_selected.pop()
                 if(no_set_on_table()):
                     print("No sets on table")
+                    if gamesounds == True:
+                        success.play()
                     reset_table_state()
                     return
             # ja augud täita
