@@ -84,7 +84,7 @@ def deck_on_table():
     location_x = table_frame_width+card_width*4+card_spacing*4
     location_y = table_frame_height
     # lisada sõltuvus allesjäänud paki suurusest
-    pygame.draw.rect(gamescreen,(0,128,0),(location_x,location_y-14,card_width+14,card_height+14))
+    pygame.draw.rect(gamescreen,green,(location_x,location_y-14,card_width+14,card_height+14))
     for card in range((len(gamedeck)+3)//6):
         # +3 abil see näitab kui pakk on tühi õigel ajal
         # see on erinev tavalistest kaartidest
@@ -179,8 +179,10 @@ def select_card(position):
                     if gamesounds == True:
                         success.play()
                     reset_table_state()
+                    sets_available()
                     return
             # ja augud täita
+            sets_available()
             if gamesounds == True:
                 success.play()
             return
@@ -193,12 +195,23 @@ def select_card(position):
     print("Selected",on_table_selected)
     print("Laual",cards_on_table)
 
+def sets_available():
+    sets_on_table = []
+    for i in cards_on_table:
+        sets_on_table.append(card_repr(i))
+    sets = len(find_sets(sets_on_table))
+    pygame.draw.rect(gamescreen,green,(260,5,35,25)) # Joonistab üle settide hulga, arvestab kahekohalisi arve
+    counter = font.render("SETS AVAILABLE: " + str(sets),0,yellow)
+    gamescreen.blit(counter, [5,0])
 
 pygame.init()
 
+yellow = (200,200,0) # Teksti värv
+green = (0,128,0) # Mängulaua värv
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
-gamescreen.fill((0, 128, 0)) # Roheline laud
+gamescreen.fill(green) # Roheline laud
 pygame.display.set_caption("Set") # Tiitliribale tekst
+font = pygame.font.Font("FSEX300.ttf", 32) # Downloaded from http://www.fixedsysexcelsior.com/
 gamesounds = True # Kas mäng esitab helisid; .ogg on Pygame'i puhul sobivaim formaat
 welcome = pygame.mixer.Sound('Sounds//Welcome.ogg') # Employing the voice talents from http://onlinetonegenerator.com/voice-generator.html
 success = pygame.mixer.Sound('Sounds//Success.ogg') # Set'i leidmise korral
@@ -212,6 +225,7 @@ if gamesounds == True: # Ei leidnud esialgu paremat viisi, kuidas helide esitami
 # selle jaoks ka while not has_set
 draw_new_deck()
 
+sets_available()
 
 while not closed:
     deck_on_table()
