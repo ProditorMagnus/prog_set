@@ -16,6 +16,10 @@ def card_on_table(card,location):
     # pakist ära võtta need mis lauale panna
     gamedeck.remove(card_repr(card))
     print("adding",card)
+    card_tuples_on_table=[]
+    for i in cards_on_table:
+        card_tuples_on_table.append(card_repr(i))
+    print("sets on table",find_sets(card_tuples_on_table))
     cards_on_table.append(card) # append paneb uued kaardid valele kohale
 
     gamescreen.blit(eval("card_"+card),location)
@@ -24,6 +28,12 @@ def card_to_table(card,index):
     gamedeck.remove(card_repr(card))
     print("adding1",card,index)
     cards_on_table.insert(index,card)
+    
+    card_tuples_on_table=[]
+    for i in cards_on_table:
+        card_tuples_on_table.append(card_repr(i))
+    print("sets on table",find_sets(card_tuples_on_table))
+    
     gamescreen.blit(eval("card_"+card),card_pos(index))
 
 # joonistab järelejäänud kaartidest koosneva kaardipaki
