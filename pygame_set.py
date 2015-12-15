@@ -9,12 +9,16 @@ from set_game_logic import *
 gamedeck = fulldeck[:]
 shuffle(gamedeck)
 
-
+def game_over():
+    # finalise everything, stop accepting further card selections and all
+    print("game over")
 
 def draw_new_deck(amount=12,recursion=0):
     if(recursion>50):
         print("50 iterations say no more sets left")
-        input()
+        game_over()
+        return True
+        # input()
     global cards_on_table
     cards_on_table = []
     for i in range(amount):
@@ -43,7 +47,8 @@ def reset_table_state(amount=12):
     for i in range(len(cards_on_table)-1,-1,-1):
         c = gamedeck.append(card_repr(cards_on_table[i]))
     
-    draw_new_deck(amount)
+    if(draw_new_deck(amount)):
+        return True
     
     global on_table_selected
     for i in range(12):
@@ -64,16 +69,20 @@ def card_on_table(card,location):
     # global cards_on_table
     # pakist ära võtta need mis lauale panna
     # print(gamedeck)
-    gamedeck.remove(card_repr(card))
-    print("adding",card)
-    cards_on_table.append(card) # append paneb uued kaardid valele kohale
+    try:
+        gamedeck.remove(card_repr(card))
+        print("adding",card)
+        cards_on_table.append(card) # append paneb uued kaardid valele kohale
 
-    # card_tuples_on_table=[]
-    # for i in cards_on_table:
-        # card_tuples_on_table.append(card_repr(i))
-    # print("sets on table",find_sets(card_tuples_on_table))
+        # card_tuples_on_table=[]
+        # for i in cards_on_table:
+            # card_tuples_on_table.append(card_repr(i))
+        # print("sets on table",find_sets(card_tuples_on_table))
 
-    gamescreen.blit(eval("card_"+card),location)
+        gamescreen.blit(eval("card_"+card),location)
+    except:
+        print("no more cards left, prevented crash")
+        reset_table_state(9)
     
 def card_to_table(card,index):
     gamedeck.remove(card_repr(card))
@@ -194,6 +203,7 @@ def select_card(position):
                     hints = create_hints()
                     hint_counter = hint_counter_sets = 0
                     print("counter:", hint_counter)
+                    sets_number_to_screen()
                     return
             # ja augud täita
             sets_number_to_screen()
@@ -250,7 +260,15 @@ def create_hints():
     sets_on_table = []
     for i in cards_on_table:
         sets_on_table.append(card_repr(i))
-    hint_list = list(find_sets(sets_on_table))[hint_counter_sets]
+    try:
+        hint_list = list(find_sets(sets_on_table))[hint_counter_sets]
+    except:
+        print("halted crash")
+        try:
+            hint_list = list(find_sets(sets_on_table))[0]
+        except:
+            print("nothing more to do, no sets")
+            return
     print("hint list", hint_list)
     hint_dict = {}
     for attribute in range(4):
