@@ -30,13 +30,13 @@ def draw_new_deck(amount=12,recursion=0):
 
 def reset_table_state(amount=12):
     # siis kui ei leidu set
-    # Ekraanile 3-ks sekundiks tekst, et kaardid segatakse uuesti
+    # Ekraanile 2.2-ks sekundiks tekst, et kaardid segatakse uuesti
     sets_number_to_screen()
     pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
     message = font.render("NO AVAILABLE SETS. RESHUFFLING.",0,yellow)
     gamescreen.blit(message, [table_frame_width+card_width*0.5+card_spacing,table_frame_height+card_height*1.5+card_spacing])
     pygame.display.update()
-    sleep(3)
+    sleep(1)
     pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
 
     global cards_on_table
@@ -188,10 +188,11 @@ def select_card(position):
                     if gamesounds == True:
                         success.play()
                     reset_table_state()
+                    sleep(1.2) # Vajalik, et reset_table_state ei jookseks kokku
                     deck_on_table()
                     reset_hints()
                     hints = create_hints()
-                    hint_counter = 0
+                    hint_counter = hint_counter_sets = 0
                     print("counter:", hint_counter)
                     return
             # ja augud täita
@@ -199,7 +200,7 @@ def select_card(position):
             deck_on_table()
             reset_hints()
             hints = create_hints()
-            hint_counter = 0
+            hint_counter = hint_counter_sets = 0
             print("counter:", hint_counter)
             if gamesounds == True:
                 success.play()
@@ -244,7 +245,7 @@ def reset_hints():
     print("hints have been reset")
     create_hints()
 
-# Kogub vihjed ühele setile
+# Kogub vihjed ühele võimalikest setidest, võimalusel võtab ette järgmise seti (hint_counter_sets)
 def create_hints():
     sets_on_table = []
     for i in cards_on_table:
@@ -297,7 +298,6 @@ wontwork = pygame.mixer.Sound('Sounds//WontWork.ogg') # Valesti valitud kaartide
 clock = pygame.time.Clock()
 
 # Hint variables
-hint_counter = 0
 hint_loc_x = table_frame_width+card_width*4+card_spacing*4
 hint_loc_y = table_frame_height+card_height+card_spacing
 hint_row_0 = hint_loc_y+5
@@ -308,15 +308,17 @@ hint_col_0 = hint_loc_x
 hint_col_1 = hint_loc_x+48
 hint_col_2 = hint_loc_x+96
 
+
 if gamesounds == True:
     welcome.play()
 
 # selle jaoks ka while not has_set
 draw_new_deck()
-
 sets_number_to_screen()
 deck_on_table()
-hint_counter_sets = sets_available()-1
+
+hint_counter = 0
+hint_counter_sets = 0
 reset_hints()
 hints = create_hints()
 
@@ -324,22 +326,24 @@ while not closed:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             closed = True
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             screen_click(event.pos)
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
+        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] or event.type == pygame.KEYDOWN and event.key == pygame.K_h:
             if hint_counter < 4:
                 paint_hint()
                 hint_counter += 1
-                print("counter:", hint_counter, "hint counter sets:", hint_counter_sets)
-                print(hints)
+##                print("counter:", hint_counter, "hint counter sets:", hint_counter_sets)
+##                print(hints)
             else:
                 reset_hints()
                 hints = create_hints()
                 hint_counter = 0
-                if hint_counter_sets > 0:
-                    hint_counter_sets -= 1
-                print("counter:", hint_counter, "hint counter sets:", hint_counter_sets)
-                print(hints)
+                if hint_counter_sets < sets_available()-1:
+                    hint_counter_sets += 1
+                if hint_counter_sets == sets_available()-1:
+                    hint_counter_sets = 0
+##                print("counter:", hint_counter, "hint counter sets:", hint_counter_sets)
+##                print(hints)
         if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
             gamesounds = abs(gamesounds - 1)
         if False:
