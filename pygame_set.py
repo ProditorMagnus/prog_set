@@ -5,13 +5,24 @@ import pygame # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
 from global_vars import *
 from set_card_data import *
 from set_game_logic import *
+import os
 
 gamedeck = fulldeck[:]
 shuffle(gamedeck)
+##for i in range(20*3):
+##    gamedeck.pop()
 
 def game_over():
     # finalise everything, stop accepting further card selections and all
+    pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
+    message = font.render("GAME OVER.",0,yellow)
+    gamescreen.blit(message, [table_frame_width+card_width*1+card_spacing*3,table_frame_height+card_height*1.5+card_spacing])
+    pygame.display.update()
     print("game over")
+    sleep(2)
+    pygame.quit()
+    exec(open("pygame_set.py").read())
+    quit()
 
 def draw_new_deck(amount=12,recursion=0):
     if(recursion>50):
@@ -196,14 +207,17 @@ def select_card(position):
                     print("No sets on table")
                     if gamesounds == True:
                         success.play()
-                    reset_table_state()
-                    sleep(1.2) # Vajalik, et reset_table_state ei jookseks kokku
-                    deck_on_table()
-                    reset_hints()
-                    hints = create_hints()
-                    hint_counter = hint_counter_sets = 0
-                    print("counter:", hint_counter)
-                    sets_number_to_screen()
+                    if len(gamedeck) > 0:
+                        reset_table_state()
+                        sleep(1.2) # Vajalik, et reset_table_state ei jookseks kokku
+                        deck_on_table()
+                        reset_hints()
+                        hints = create_hints()
+                        hint_counter = hint_counter_sets = 0
+                        print("counter:", hint_counter)
+                        sets_number_to_screen()
+                    else:
+                        game_over()
                     return
             # ja augud täita
             sets_number_to_screen()
@@ -226,13 +240,14 @@ def select_card(position):
 
 # Laob kaardid uuesti ekraanile, veel testimata.
 def reset_last_cards():
+    print("reset last cards")
     global cards_on_table
     pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
     cards = []
     for i in range(len(cards_on_table)):
         cards.append(cards_on_table.pop())
     cards_on_table = cards[:]
-    shuffle(cards_on_table)
+    #shuffle(cards_on_table)
     for j in range(len(cards_on_table)):
         card_on_table(card_str(cards[0]),card_pos(j))
     
