@@ -1,6 +1,6 @@
 from random import randint
 from random import shuffle
-from time import time
+from time import time, sleep
 import pygame # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
 from global_vars import *
 from set_card_data import *
@@ -26,10 +26,19 @@ def draw_new_deck(amount=12,recursion=0):
     if no_set_on_table():
         shuffle(gamedeck)
         draw_new_deck(amount,recursion+1)
-    
+
 
 def reset_table_state(amount=12):
     # siis kui ei leidu set
+    # Ekraanile 3-ks sekundiks tekst, et kaardid segatakse uuesti
+    sets_number_to_screen()
+    pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
+    message = font.render("NO AVAILABLE SETS. RESHUFFLING.",0,yellow)
+    gamescreen.blit(message, [table_frame_width+card_width*0.5+card_spacing,table_frame_height+card_height*1.5+card_spacing])
+    pygame.display.update()
+    sleep(3)
+    pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
+
     global cards_on_table
     for i in range(len(cards_on_table)-1,-1,-1):
         c = gamedeck.append(card_repr(cards_on_table[i]))
@@ -140,7 +149,6 @@ def select_card(position):
         this_card = card_repr(cards_on_table[((position[0])//156)+4*(position[1])//226])
     except:
         print("indeksid on vigased, edasi ei saa hetkel - teha game over?")
-        
         return
         # lahendus võiks olla näiteks kontroll, kas cards_on_table on selles kohas None - ning see None panna õigesse kohta
     if this_card in on_table_selected:
@@ -170,6 +178,8 @@ def select_card(position):
                     print(gamedeck[0],"added, shape,fill,quantity,color")
                     card_to_table(card_str(gamedeck[0]),(cards_on_table.index(card_str(on_table_selected[i]))))
                 else:
+                    if sets_available() > 0:
+                        reset_last_cards()
                     print("deck is empty, what now !!! see rikub kõik indeksid hetkel ära")
                 
                 cards_on_table.pop(cards_on_table.index(card_str(on_table_selected[i])))
@@ -179,10 +189,11 @@ def select_card(position):
                     if gamesounds == True:
                         success.play()
                     reset_table_state()
-                    sets_available()
+                    deck_on_table()
                     return
             # ja augud täita
-            sets_available()
+            sets_number_to_screen()
+            deck_on_table()
             if gamesounds == True:
                 success.play()
             return
@@ -195,13 +206,36 @@ def select_card(position):
     print("Selected",on_table_selected)
     print("Laual",cards_on_table)
 
+# Laob kaardid uuesti ekraanile, veel testimata.
+def reset_last_cards():
+    global cards_on_table
+    pygame.draw.rect(gamescreen,green,(card_area)) # Joonistab üle mänguvälja
+    cards = []
+    for i in range(len(cards_on_table)):
+        cards.append(cards_on_table.pop())
+    cards_on_table = cards[:]
+    shuffle(cards_on_table)
+    for j in range(len(cards_on_table)):
+        card_on_table(card_str(cards[0]),card_pos(j))
+    
+
+# Joonistab ekraanile laual olevate kaartide hulgas oleva võimalike settide hulga
 def sets_available():
     sets_on_table = []
     for i in cards_on_table:
         sets_on_table.append(card_repr(i))
-    sets = len(find_sets(sets_on_table))
+    return len(find_sets(sets_on_table))
+
+def sets_number_to_screen():
     pygame.draw.rect(gamescreen,green,(260,5,35,25)) # Joonistab üle settide hulga, arvestab kahekohalisi arve
-    counter = font.render("SETS AVAILABLE: " + str(sets),0,yellow)
+    counter = font.render("SETS AVAILABLE: " + str(sets_available()),0,yellow)
+    gamescreen.blit(counter, [5,0])
+
+# Joonistab ekraanile seni kogutud punktide hulga
+# Work in progress...
+def score_display():
+    pygame.draw.rect(gamescreen,green,(260,5,35,25)) # Joonistab üle skoori
+    counter = font.render("SCORE: " + str(score).rjust(6,"0"),0,yellow)
     gamescreen.blit(counter, [5,0])
 
 pygame.init()
@@ -210,6 +244,7 @@ yellow = (200,200,0) # Teksti värv
 green = (0,128,0) # Mängulaua värv
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
 gamescreen.fill(green) # Roheline laud
+card_area = (table_frame_width,table_frame_height,card_width*4+card_spacing*3,card_height*3+card_spacing*2)
 pygame.display.set_caption("Set") # Tiitliribale tekst
 font = pygame.font.Font("FSEX300.ttf", 32) # Downloaded from http://www.fixedsysexcelsior.com/
 gamesounds = True # Kas mäng esitab helisid; .ogg on Pygame'i puhul sobivaim formaat
@@ -225,10 +260,10 @@ if gamesounds == True: # Ei leidnud esialgu paremat viisi, kuidas helide esitami
 # selle jaoks ka while not has_set
 draw_new_deck()
 
-sets_available()
+sets_number_to_screen()
+deck_on_table()
 
 while not closed:
-    deck_on_table()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             closed = True
