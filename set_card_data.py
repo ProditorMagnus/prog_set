@@ -1,7 +1,7 @@
 import pygame
 
-# Pygame toetab graafikal alpha-kanalit (transparency), kıik kaardid kasutavad seda
-# Kaardifailid 151*221 pikslit, igas servas 10 pikslit transparency't, mida kasutab ‰ra 'selected_card.png'
+# Pygame toetab graafikal alpha-kanalit (transparency), k√µik kaardid kasutavad seda
+# Kaardifailid 151*221 pikslit, igas servas 10 pikslit transparency't, mida kasutab √§ra 'selected_card.png'
 # Laeme kaardid
 card_0000 = pygame.image.load('Cards//0000.png')
 card_0010 = pygame.image.load('Cards//0010.png')
@@ -89,7 +89,11 @@ selected_card = pygame.image.load('Cards//selected_card.png')
 deselected_card = pygame.image.load('Cards//deselected_card.png')
 deck_card = pygame.image.load('Cards//deck_card.png')
 
-# seda tıen‰oliselt pole lıpuks vaja
+hint_card = pygame.image.load('Cards//hint_card.png')
+hint_card_select_1 = pygame.image.load('Cards//hint_card_select_1.png')
+hint_card_select_3 = pygame.image.load('Cards//hint_card_select_3.png')
+
+# seda t√µen√§oliselt pole l√µpuks vaja
 tmp_removed_card = pygame.image.load('Cards//tmp_removed_card.png')
 
 
@@ -97,7 +101,7 @@ tmp_removed_card = pygame.image.load('Cards//tmp_removed_card.png')
 card_width = 151
 card_height = 221
 
-# Kaartide paigutuse m‰‰ratlus ja asukohad laual
+# Kaartide paigutuse m√§√§ratlus ja asukohad laual
 card_spacing = 5
 table_frame_width = 20
 table_frame_height = 50
