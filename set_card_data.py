@@ -85,17 +85,11 @@ card_2202 = pygame.image.load('Cards//2202.png')
 card_2212 = pygame.image.load('Cards//2212.png')
 card_2222 = pygame.image.load('Cards//2222.png')
 
+card_xxxx = pygame.image.load('Cards//xxxx.png')
+
 selected_card = pygame.image.load('Cards//selected_card.png')
 deselected_card = pygame.image.load('Cards//deselected_card.png')
 deck_card = pygame.image.load('Cards//deck_card.png')
-
-hint_card = pygame.image.load('Cards//hint_card.png')
-hint_card_select_1 = pygame.image.load('Cards//hint_card_select_1.png')
-hint_card_select_3 = pygame.image.load('Cards//hint_card_select_3.png')
-
-# seda tõenäoliselt pole lõpuks vaja
-tmp_removed_card = pygame.image.load('Cards//tmp_removed_card.png')
-
 
 # Kaartide pildifailide suurused
 card_width = 151
@@ -105,6 +99,7 @@ card_height = 221
 card_spacing = 5
 table_frame_width = 20
 table_frame_height = 50
+card_area = (table_frame_width,table_frame_height,card_width*4+card_spacing*3,card_height*3+card_spacing*2)
 
 card0_loc = (table_frame_width,table_frame_height)
 card1_loc = (table_frame_width+card_spacing+card_width,table_frame_height)
@@ -118,3 +113,20 @@ card8_loc = (table_frame_width,table_frame_height+card_spacing*2+card_height*2)
 card9_loc = (table_frame_width+card_spacing+card_width,table_frame_height+card_spacing*2+card_height*2)
 card10_loc = (table_frame_width+card_spacing*2+card_width*2,table_frame_height+card_spacing*2+card_height*2)
 card11_loc = (table_frame_width+card_spacing*3+card_width*3,table_frame_height+card_spacing*2+card_height*2)
+
+# Vihjekaart ja märgistus
+hint_card = pygame.image.load('Cards//hint_card.png')
+hint_card_select_1 = pygame.image.load('Cards//hint_card_select_1.png')
+hint_card_select_3 = pygame.image.load('Cards//hint_card_select_3.png')
+
+# Vihjekaardi ja märgistuse paigutus
+hint_loc_x = table_frame_width+card_width*4+card_spacing*4
+hint_loc_y = table_frame_height+card_height+card_spacing
+
+hint_row_0 = hint_loc_y+5
+hint_row_1 = hint_loc_y+58
+hint_row_2 = hint_loc_y+110
+hint_row_3 = hint_loc_y+162
+hint_col_0 = hint_loc_x
+hint_col_1 = hint_loc_x+48
+hint_col_2 = hint_loc_x+96

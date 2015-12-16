@@ -2,12 +2,6 @@ from random import randint
 from random import shuffle
 # vajalik card_pos jaoks
 from set_card_data import card0_loc,card1_loc,card2_loc,card3_loc,card4_loc,card5_loc,card6_loc,card7_loc,card8_loc,card9_loc,card10_loc,card11_loc
-# from time import time
-# from copy import deepcopy
-
-# see peaks set.py üle võtma sobival kujul, hetkel on siit kasutuses vaid card_repr ja find_sets
-
-# create fulldeck
 
 def card_repr(s):
 	return (int(s[0]),int(s[1]),int(s[2]),int(s[3]))
@@ -17,9 +11,6 @@ def card_str(t):
 
 def card_pos(i):
 	return eval("card"+str(i)+"_loc")
-
-# gamedeck = fulldeck[:]
-# shuffle(gamedeck)
 
 def find_sets(cards):
 	# iga kahese grupi kohta, kas eksisteerib kindel kolmas kaart
@@ -122,7 +113,3 @@ def replace_set(selection):
     for card in range(3):
         # asendab kaardid pakist võetud uutega, nii et laual järjekord ei muutu
         on_table[int(sel[card])-1] = replace.pop()
-
-
-# input on mul lihtsalt selle jaoks vaja et programm kohe kinni ei läheks - kasutan shell execute current file mitte mõnda pythoni asja
-# input()

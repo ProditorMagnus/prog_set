@@ -9,7 +9,7 @@ import os
 
 gamedeck = fulldeck[:]
 shuffle(gamedeck)
-##for i in range(20*3):
+##for i in range(23*3):
 ##    gamedeck.pop()
 
 def game_over():
@@ -58,10 +58,10 @@ def reset_table_state(amount=12):
     global cards_on_table
     for i in range(len(cards_on_table)-1,-1,-1):
         c = gamedeck.append(card_repr(cards_on_table[i]))
-    
+
     if(draw_new_deck(amount)):
         return True
-    
+
     global on_table_selected
     for i in range(12):
         gamescreen.blit(deselected_card,card_pos(i))
@@ -73,7 +73,7 @@ def no_set_on_table():
         card_tuples_on_table.append(card_repr(i))
     print("sets on table",find_sets(card_tuples_on_table))
     return find_sets(card_tuples_on_table)==set()
-        
+
 # joonistab kaardi ekraanile
 def card_on_table(card,location):
     print(card_repr(card))
@@ -95,31 +95,36 @@ def card_on_table(card,location):
     except:
         print("no more cards left, prevented crash")
         reset_table_state(9)
-    
+        if len(gamedeck) == 0 and sets_available() == 0:
+            game_over()
+
 def card_to_table(card,index):
     gamedeck.remove(card_repr(card))
     print("adding1",card,index)
     cards_on_table.insert(index,card)
-    
+
     # card_tuples_on_table=[]
     # for i in cards_on_table:
         # card_tuples_on_table.append(card_repr(i))
     # print("sets on table",find_sets(card_tuples_on_table))
     # siin on veel vara kontrollida, eelmist pole veel eemaldatud
-    
+
     gamescreen.blit(eval("card_"+card),card_pos(index))
 
 # joonistab järelejäänud kaartidest koosneva kaardipaki
 def deck_on_table():
-    location_x = table_frame_width+card_width*4+card_spacing*4
-    location_y = table_frame_height
-    pygame.draw.rect(gamescreen,green,(location_x,location_y-14,card_width+14,card_height+14))
+    loc_x = table_frame_width+card_width*4+card_spacing*4
+    loc_y = table_frame_height
+    pygame.draw.rect(gamescreen,green,(loc_x,loc_y-14,card_width+14,card_height+14))
     for card in range((len(gamedeck)+3)//6):
         # +3 abil see näitab kui pakk on tühi õigel ajal
         # see on erinev tavalistest kaartidest
-        gamescreen.blit(deck_card,(location_x,location_y))
-        location_x += 2
-        location_y -= 2
+        gamescreen.blit(deck_card,(loc_x,loc_y))
+        loc_x += 2
+        loc_y -= 2
+    message = font.render(str(len(gamedeck)),0,violet)
+    gamescreen.blit(message, [loc_x+25,loc_y+170])
+    print("len gamedeck", len(gamedeck))
 
 # reageerib klikile mänguväljal
 def screen_click(position):
@@ -192,7 +197,7 @@ def select_card(position):
             for i in range(len(on_table_selected)-1,-1,-1):
                 print("Removing",cards_on_table.index(card_str(on_table_selected[i])))
                 
-                gamescreen.blit(tmp_removed_card,card_pos(cards_on_table.index(card_str(on_table_selected[i]))))
+                gamescreen.blit(card_xxxx,card_pos(cards_on_table.index(card_str(on_table_selected[i]))))
                 
                 if(len(gamedeck)>0):
                     print(gamedeck[0],"added, shape,fill,quantity,color")
@@ -210,23 +215,36 @@ def select_card(position):
                         success.play()
                     if len(gamedeck) > 0:
                         reset_table_state()
-                        sleep(1.2) # Vajalik, et reset_table_state ei jookseks kokku
+                        sleep(0.6) # Vajalik, et reset_table_state ei jookseks kokku
+                        if gamesounds == True:
+                            drawcards.play()
+                            sleep(0.6)
                         deck_on_table()
                         reset_hints()
+                        global hints
+                        global hint_counter
+                        global hint_counter_sets
                         hints = create_hints()
-                        hint_counter = hint_counter_sets = 0
-                        print("counter:", hint_counter)
+                        hint_counter = 0
+                        hint_counter_sets = 0
+                        print("gamedeck length:",len(gamedeck))
                         sets_number_to_screen()
                     else:
-                        game_over()
+                        if len(gamedeck) == 0 and sets_available() == 0:
+                            game_over()
                     return
             # ja augud täita
             sets_number_to_screen()
             deck_on_table()
             reset_hints()
+            # vaja muuta globaalseid muutujaid
+            global hints
+            global hint_counter
+            global hint_counter_sets
             hints = create_hints()
-            hint_counter = hint_counter_sets = 0
-            print("counter:", hint_counter)
+            hint_counter = 0
+            hint_counter_sets = 0
+            print("gamedeck length:",len(gamedeck))
             if gamesounds == True:
                 success.play()
             return
@@ -247,11 +265,15 @@ def reset_last_cards():
     cards = []
     for i in range(len(cards_on_table)):
         cards.append(cards_on_table.pop())
+    print("Cards:", cards)
     cards_on_table = cards[:]
-    #shuffle(cards_on_table)
+    print("Cards on table:", cards_on_table)
+    print("sets available:", sets_available())
     for j in range(len(cards_on_table)):
         card_on_table(card_str(cards[0]),card_pos(j))
-    
+        print("card_str(cards[0]),card_pos(j):", card_str(cards[0]),card_pos(j))
+    pygame.display.update()
+
 
 # Joonistab ekraanile laual olevate kaartide hulgas oleva võimalike settide hulga
 def sets_available():
@@ -268,7 +290,6 @@ def sets_number_to_screen():
 # Joonistab ekraanile vihjeala
 def reset_hints():
     gamescreen.blit(hint_card,(hint_loc_x,hint_loc_y))
-    print("hints have been reset")
     create_hints()
 
 # Kogub vihjed ühele võimalikest setidest, võimalusel võtab ette järgmise seti (hint_counter_sets)
@@ -285,7 +306,6 @@ def create_hints():
         except:
             print("nothing more to do, no sets")
             return
-    print("hint list", hint_list)
     hint_dict = {}
     for attribute in range(4):
         value = 0
@@ -302,7 +322,6 @@ def create_hints():
             ret_list.append((hint_col_1,eval("hint_row_"+str(i)),"hint_card_select_1"))
         if hint_dict[i] == 12:
             ret_list.append((hint_col_2,eval("hint_row_"+str(i)),"hint_card_select_1"))
-    print("hints have been created")
     return ret_list
 
 def paint_hint():
@@ -319,9 +338,10 @@ pygame.init()
 
 yellow = (200,200,0) # Teksti värv
 green = (0,128,0) # Mängulaua värv
+lavender = (200,191,231)
+violet = (105,0,160)
 gamescreen = pygame.display.set_mode((display_width, display_height)) # Akna suurus
 gamescreen.fill(green) # Roheline laud
-card_area = (table_frame_width,table_frame_height,card_width*4+card_spacing*3,card_height*3+card_spacing*2)
 pygame.display.set_caption("Set") # Tiitliribale tekst
 font = pygame.font.Font("FSEX300.ttf", 32) # Downloaded from http://www.fixedsysexcelsior.com/
 
@@ -329,19 +349,8 @@ gamesounds = True # Kas mäng esitab helisid; .ogg on Pygame'i puhul sobivaim fo
 welcome = pygame.mixer.Sound('Sounds//Welcome.ogg') # Employing the voice talents from http://onlinetonegenerator.com/voice-generator.html
 success = pygame.mixer.Sound('Sounds//Success.ogg') # Set'i leidmise korral
 wontwork = pygame.mixer.Sound('Sounds//WontWork.ogg') # Valesti valitud kaartide korral
+drawcards = pygame.mixer.Sound('Sounds//DrawCards.ogg') # Reshuffle'i ajal.
 clock = pygame.time.Clock()
-
-# Hint variables
-hint_loc_x = table_frame_width+card_width*4+card_spacing*4
-hint_loc_y = table_frame_height+card_height+card_spacing
-hint_row_0 = hint_loc_y+5
-hint_row_1 = hint_loc_y+58
-hint_row_2 = hint_loc_y+110
-hint_row_3 = hint_loc_y+162
-hint_col_0 = hint_loc_x
-hint_col_1 = hint_loc_x+48
-hint_col_2 = hint_loc_x+96
-
 
 if gamesounds == True:
     welcome.play()
@@ -366,18 +375,16 @@ while not closed:
             if hint_counter < 4:
                 paint_hint()
                 hint_counter += 1
-##                print("counter:", hint_counter, "hint counter sets:", hint_counter_sets)
-##                print(hints)
             else:
                 reset_hints()
                 hints = create_hints()
                 hint_counter = 0
                 if hint_counter_sets < sets_available()-1:
                     hint_counter_sets += 1
-                if hint_counter_sets == sets_available()-1:
+                else:
                     hint_counter_sets = 0
-##                print("counter:", hint_counter, "hint counter sets:", hint_counter_sets)
-##                print(hints)
+                paint_hint()
+                hint_counter += 1
         if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
             gamesounds = abs(gamesounds - 1)
         if False:
