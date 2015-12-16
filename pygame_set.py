@@ -21,7 +21,8 @@ def game_over():
     print("game over")
     sleep(2)
     pygame.quit()
-    exec(open("pygame_set.py").read())
+    # exec(open("pygame_set.py").read())
+    os.system("python pygame_set.py")
     quit()
 
 def draw_new_deck(amount=12,recursion=0):
