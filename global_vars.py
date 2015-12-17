@@ -3,6 +3,12 @@
 # ma olen kuulnud, et teise faili muutujaid on keeruline muuta,
 # seega tõenäoliselt seda siin väga ei kasuta (kui siis muteeruv, või read only)
 
+green = (0,128,0) # Mängulaua värv
+red = (255,0,0) # Boonus nullis
+violet = (105,0,160) # Kaartide arvu värv
+white = (240,240,240) # Game over taust
+yellow = (200,200,0) # Teksti värv
+
 display_width = 830
 display_height = 740
 

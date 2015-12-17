@@ -120,7 +120,7 @@ hint_card_select_1 = pygame.image.load('Cards//hint_card_select_1.png')
 hint_card_select_3 = pygame.image.load('Cards//hint_card_select_3.png')
 
 # Vihjekaardi ja märgistuse paigutus
-hint_loc_x = table_frame_width+card_width*4+card_spacing*4
+hint_loc_x = table_frame_width+card_width*4+card_spacing*6
 hint_loc_y = table_frame_height+card_height+card_spacing
 
 hint_row_0 = hint_loc_y+5
